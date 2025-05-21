@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice Typing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 30px;
+      text-align: center;
+      background-color: #f9f9f9;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    #output {
+      font-size: 1.5em;
+      margin-top: 40px;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🗣️ Voice to Text</h1>
+  <button onclick="startDictation()">🎙️ Start Talking</button>
+  <div id="output">Your words will appear here...</div>
+
+  <script>
+    function startDictation() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Your browser does not support speech recognition. Try Chrome or Safari.");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        document.getElementById('output').innerText = "Listening...";
+      };
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        document.getElementById('output').innerText = transcript;
+      };
+
+      recognition.onerror = (event) => {
+        console.error(event.error);
+        alert("Error: " + event.error);
+      };
+
+      recognition.onend = () => {
+        console.log("Recognition ended.");
+      };
+
+      recognition.start();
+    }
+  </script>
+
+</body>
+</html>
